@@ -20,6 +20,9 @@ result = collections.namedtuple('result', ['uid', 'arg', 'title', 'subtitle', 'i
 def args():
     return tuple(unescape(decode(arg)) for arg in sys.argv[1:])
 
+def config():
+    return _create('config')
+
 def decode(s):
     return unicodedata.normalize('NFC', s.decode('utf-8'))
 
@@ -28,22 +31,17 @@ def item(root, uid, arg, title, subtitle, icon):
     for (tag, value) in [(u'title', title), (u'subtitle', subtitle), (u'icon', icon)]:
         SubElement(item, tag).text = value
 
-def path(volatile):
-    path = {
-        True: '~/Library/Caches/com.runningwithcrayons.Alfred-2/Workflow Data',
-        False: '~/Library/Application Support/Alfred 2/Workflow Data'
-    }[bool(volatile)]
-    path = os.path.join(os.path.expanduser(path), bundleid)
-    if not os.path.exists(path):
-        os.mkdir(path)
-    if not os.access(path, os.W_OK):
-        raise IOError('No write access: %s' % path)
-    return path
-
 def unescape(query, characters=None):
     for character in (_UNESCAPE_CHARACTERS if (characters is None) else characters):
         query = query.replace('\\%s' % character, character)
     return query
+
+def work(volatile):
+    path = {
+        True: '~/Library/Caches/com.runningwithcrayons.Alfred-2/Workflow Data',
+        False: '~/Library/Application Support/Alfred 2/Workflow Data'
+    }[bool(volatile)]
+    return _create(os.path.join(os.path.expanduser(path), bundleid))
 
 def write(text):
     sys.stdout.write(text)
@@ -57,3 +55,10 @@ def xml(results):
     buffer.write('<?xml version="1.0"?>\n')
     tree.write(buffer, encoding='utf-8')
     return buffer.getvalue()
+
+def _create(path):
+    if not os.path.isdir(path):
+        os.mkdir(path)
+    if not os.access(path, os.W_OK):
+        raise IOError('No write access: %s' % path)
+    return path
