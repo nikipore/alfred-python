@@ -34,5 +34,8 @@ nosetests.xml
 .project
 .pydevproject
 
+# Eclipse
+.settings
+
 # Mac
 .DS_Store
