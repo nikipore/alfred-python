@@ -12,8 +12,8 @@ from xml.etree.ElementTree import ElementTree, SubElement, fromstring
 _MAX_RESULTS = 9
 _UNESCAPE_CHARACTERS = u'\\ ()[]{};`"$'
 
-PREFERENCES = plistlib.readPlist('info.plist')
-BUNDLE_ID = PREFERENCES['bundleid']
+preferences = plistlib.readPlist('info.plist')
+bundleid = preferences['bundleid']
 
 result = collections.namedtuple('result', ['uid', 'arg', 'title', 'subtitle', 'icon'])
 
@@ -33,7 +33,7 @@ def path(volatile):
         True: '~/Library/Caches/com.runningwithcrayons.Alfred-2/Workflow Data',
         False: '~/Library/Application Support/Alfred 2/Workflow Data'
     }[bool(volatile)]
-    path = os.path.join(os.path.expanduser(path), BUNDLE_ID)
+    path = os.path.join(os.path.expanduser(path), bundleid)
     if not os.path.exists(path):
         os.mkdir(path)
     if not os.access(path, os.W_OK):
