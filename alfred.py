@@ -8,7 +8,7 @@ import sys
 from xml.etree.ElementTree import Element, SubElement, tostring
 
 _MAX_RESULTS = 9
-_UNESCAPE_CHARACTERS = u'\\ ()[]{};`"$'
+UNESCAPE_CHARACTERS = u"""\\ ()[]{};`'"$"""
 
 preferences = plistlib.readPlist('info.plist')
 bundleid = preferences['bundleid']
@@ -45,8 +45,8 @@ class Item(object):
             SubElement(item, attribute, self.unicode(attributes)).text = unicode(value)
         return item
 
-def args():
-    return tuple(unescape(decode(arg)) for arg in sys.argv[1:])
+def args(characters=None):
+    return tuple(unescape(decode(arg), characters) for arg in sys.argv[1:])
 
 def config():
     return _create('config')
@@ -55,10 +55,10 @@ def decode(s):
     return unicodedata.normalize('NFC', s.decode('utf-8'))
 
 def uid(uid):
-    return '-'.join(map(unicode, (bundleid, uid)))
+    return u'-'.join(map(unicode, (bundleid, uid)))
 
 def unescape(query, characters=None):
-    for character in (_UNESCAPE_CHARACTERS if (characters is None) else characters):
+    for character in (UNESCAPE_CHARACTERS if (characters is None) else characters):
         query = query.replace('\\%s' % character, character)
     return query
 
