@@ -1,13 +1,11 @@
 # -*- coding: utf-8 -*-
-import collections
-import cStringIO
 import itertools
 import os
 import plistlib
 import unicodedata
 import sys
 
-from xml.etree.ElementTree import ElementTree, SubElement, fromstring
+from xml.etree.ElementTree import Element, SubElement, tostring
 
 _MAX_RESULTS = 9
 _UNESCAPE_CHARACTERS = u'\\ ()[]{};`"$'
@@ -15,7 +13,37 @@ _UNESCAPE_CHARACTERS = u'\\ ()[]{};`"$'
 preferences = plistlib.readPlist('info.plist')
 bundleid = preferences['bundleid']
 
-result = collections.namedtuple('result', ['uid', 'arg', 'title', 'subtitle', 'icon'])
+class Item(object):
+    @classmethod
+    def unicode(cls, value):
+        try:
+            items = value.iteritems()
+        except AttributeError:
+            return unicode(value)
+        else:
+            return dict(map(unicode, item) for item in items)
+
+    def __init__(self, attributes, title, subtitle, icon=None):
+        self.attributes = attributes
+        self.title = title
+        self.subtitle = subtitle
+        self.icon = icon
+
+    def __str__(self):
+        return tostring(self.xml(), encoding='utf-8')
+
+    def xml(self):
+        item = Element(u'item', self.unicode(self.attributes))
+        for attribute in (u'title', u'subtitle', u'icon'):
+            value = getattr(self, attribute)
+            if value is None:
+                continue
+            try:
+                (value, attributes) = value
+            except:
+                attributes = {}
+            SubElement(item, attribute, self.unicode(attributes)).text = unicode(value)
+        return item
 
 def args():
     return tuple(unescape(decode(arg)) for arg in sys.argv[1:])
@@ -26,10 +54,8 @@ def config():
 def decode(s):
     return unicodedata.normalize('NFC', s.decode('utf-8'))
 
-def item(root, uid, arg, title, subtitle, icon):
-    item = SubElement(root, u'item', {u'uid': uid, u'arg': arg})
-    for (tag, value) in [(u'title', title), (u'subtitle', subtitle), (u'icon', icon)]:
-        SubElement(item, tag).text = value
+def uid(uid):
+    return '-'.join(map(unicode, (bundleid, uid)))
 
 def unescape(query, characters=None):
     for character in (_UNESCAPE_CHARACTERS if (characters is None) else characters):
@@ -46,15 +72,11 @@ def work(volatile):
 def write(text):
     sys.stdout.write(text)
 
-def xml(results):
-    tree = ElementTree(fromstring('<items/>'))
-    root = tree.getroot()
-    for result in itertools.islice(results, _MAX_RESULTS):
-        item(root, *map(unicode, result))
-    buffer = cStringIO.StringIO()
-    buffer.write('<?xml version="1.0"?>\n')
-    tree.write(buffer, encoding='utf-8')
-    return buffer.getvalue()
+def xml(items):
+    root = Element('items')
+    for item in itertools.islice(items, _MAX_RESULTS):
+        root.append(item.xml())
+    return tostring(root, encoding='utf-8')
 
 def _create(path):
     if not os.path.isdir(path):
