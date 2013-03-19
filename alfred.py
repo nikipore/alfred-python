@@ -7,8 +7,15 @@ import sys
 
 from xml.etree.ElementTree import Element, SubElement, tostring
 
+"""
+You should run your script via /bin/bash with all escape options ticked.
+The command line should be
+
+python yourscript.py "{query}" arg2 arg3 ...
+"""
+UNESCAPE_CHARACTERS = u""" ;()"""
+
 _MAX_RESULTS_DEFAULT = 9
-UNESCAPE_CHARACTERS = u"""\\ ()[]{};`'"$"""
 
 preferences = plistlib.readPlist('info.plist')
 bundleid = preferences['bundleid']
