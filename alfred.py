@@ -45,9 +45,9 @@ class Item(object):
             value = getattr(self, attribute)
             if value is None:
                 continue
-            try:
+            if len(value) == 2 and isinstance(value[1], dict):
                 (value, attributes) = value
-            except:
+            else:
                 attributes = {}
             SubElement(item, attribute, self.unicode(attributes)).text = unicode(value)
         return item
