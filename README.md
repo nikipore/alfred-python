@@ -48,5 +48,7 @@ You are also invited to look at the workflows implemented with alfred-python:
 * [Access to Firefox Bookmarks and User Input History](https://github.com/nikipore/alfred-firefoxbookmarks)
 * [File Action Add to Archive](https://github.com/nikipore/alfred-fileaction-zip)
 * [Call with Telephone App](https://github.com/nikipore/alfred-voipcall)
+* [MailTo: address emails from Alfred](https://github.com/deanishe/alfred-mailto)
+* [Smart Folders: search and browse Smart Folders/Saved Searches from Alfred](https://github.com/deanishe/alfred-smartfolders)
 
 Please feel free to contribute more workflows implemented with alfred-python here, or add functionality to/fix bugs on alfred-python.
