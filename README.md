@@ -50,5 +50,6 @@ You are also invited to look at the workflows implemented with alfred-python:
 * [Call with Telephone App](https://github.com/nikipore/alfred-voipcall)
 * [MailTo: address emails from Alfred](https://github.com/deanishe/alfred-mailto)
 * [Smart Folders: search and browse Smart Folders/Saved Searches from Alfred](https://github.com/deanishe/alfred-smartfolders)
+* [Exchange rates: check exchange rates in Alfred](https://github.com/krzysztofr/alfred-currencies)
 
 Please feel free to contribute more workflows implemented with alfred-python here, or add functionality to/fix bugs on alfred-python.
