@@ -24,11 +24,11 @@ class Item(object):
     @classmethod
     def unicode(cls, value):
         try:
-            items = value.iteritems()
+            items = iter(value.items())
         except AttributeError:
-            return unicode(value)
+            return str(value)
         else:
-            return dict(map(unicode, item) for item in items)
+            return dict(map(str, item) for item in items)
 
     def __init__(self, attributes, title, subtitle, icon=None):
         self.attributes = attributes
@@ -37,7 +37,7 @@ class Item(object):
         self.icon = icon
 
     def __str__(self):
-        return tostring(self.xml(), encoding='utf-8')
+        return tostring(self.xml()).decode('utf-8')
 
     def xml(self):
         item = Element(u'item', self.unicode(self.attributes))
@@ -49,7 +49,7 @@ class Item(object):
                 (value, attributes) = value
             else:
                 attributes = {}
-            SubElement(item, attribute, self.unicode(attributes)).text = unicode(value)
+            SubElement(item, attribute, self.unicode(attributes)).text = str(value)
         return item
 
 def args(characters=None):
@@ -62,7 +62,7 @@ def decode(s):
     return unicodedata.normalize('NFD', s.decode('utf-8'))
 
 def uid(uid):
-    return u'-'.join(map(unicode, (bundleid, uid)))
+    return u'-'.join(map(str, (bundleid, uid)))
 
 def unescape(query, characters=None):
     for character in (UNESCAPE_CHARACTERS if (characters is None) else characters):
