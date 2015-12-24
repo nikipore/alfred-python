@@ -26,9 +26,9 @@ class Item(object):
         try:
             items = iter(value.items())
         except AttributeError:
-            return str(value)
+            return unicode(value)
         else:
-            return dict(map(str, item) for item in items)
+            return dict(map(unicode, item) for item in items)
 
     def __init__(self, attributes, title, subtitle, icon=None):
         self.attributes = attributes
@@ -49,7 +49,7 @@ class Item(object):
                 (value, attributes) = value
             else:
                 attributes = {}
-            SubElement(item, attribute, self.unicode(attributes)).text = str(value)
+            SubElement(item, attribute, self.unicode(attributes)).text = self.unicode(value)
         return item
 
 def args(characters=None):
