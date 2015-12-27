@@ -44,6 +44,13 @@ class AlfredTests(unittest.TestCase):
         alfred_filename = alfred.decode(self._test_filename)
         self.assert_(alfred_filename == fs_filename)
 
+    def test_unicode_value_xml(self):
+        """Ensure we can handle converting Items with unicode values to xml"""
+        item = alfred.Item({}, u'\xb7', u'\xb7')
+        expected = '<items><item><title>\xc2\xb7</title><subtitle>\xc2\xb7</subtitle></item></items>'
+        actual = alfred.xml([item])
+        self.assert_(expected == actual, '{!r} != {!r}'.format(expected, actual))
+
 
 if __name__ == u'__main__':
     unittest.main()
