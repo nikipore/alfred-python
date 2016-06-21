@@ -61,6 +61,9 @@ def config():
 def decode(s):
     return unicodedata.normalize('NFD', s.decode('utf-8'))
 
+def env(key):
+    return os.environ['alfred_%s' % key]
+
 def uid(uid):
     return u'-'.join(map(str, (bundleid, uid)))
 
@@ -71,10 +74,10 @@ def unescape(query, characters=None):
 
 def work(volatile):
     path = {
-        True: '~/Library/Caches/com.runningwithcrayons.Alfred-3/Workflow Data',
-        False: '~/Library/Application Support/Alfred 3/Workflow Data'
+        True: env('workflow_cache'),
+        False: env('workflow_data')
     }[bool(volatile)]
-    return _create(os.path.join(os.path.expanduser(path), bundleid))
+    return _create(path)
 
 def write(text):
     sys.stdout.write(text)
