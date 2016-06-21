@@ -71,8 +71,8 @@ def unescape(query, characters=None):
 
 def work(volatile):
     path = {
-        True: '~/Library/Caches/com.runningwithcrayons.Alfred-2/Workflow Data',
-        False: '~/Library/Application Support/Alfred 2/Workflow Data'
+        True: '~/Library/Caches/com.runningwithcrayons.Alfred-3/Workflow Data',
+        False: '~/Library/Application Support/Alfred 3/Workflow Data'
     }[bool(volatile)]
     return _create(os.path.join(os.path.expanduser(path), bundleid))
 
